@@ -22,6 +22,7 @@
             background-size: 50% 100%;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            overflow-x: hidden;
         }
         
         /* --- SIDEBAR DINÂMICA --- */
@@ -397,6 +398,29 @@
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4); transition: 0.3s; font-size: 1.1rem;
         }
         .btn-whatsapp:hover { transform: scale(1.05); background: #20bd5a; }
+
+        @media (max-width: 1200px) {
+            :root { --sidebar-open: 300px; }
+            .content { padding: 70px 40px; }
+        }
+
+        @media (max-width: 1100px) {
+            .highlight-split { grid-template-columns: 1fr; }
+            .highlight-split-image { min-height: 420px; }
+        }
+
+        @media (max-width: 1024px) {
+            .service-list { grid-template-columns: 1fr; gap: 28px; }
+            .service-item { padding: 40px; }
+        }
+
+        @media (max-height: 700px) {
+            .sidebar { overflow-y: auto; padding: 28px 24px 36px; }
+            .main-icon { max-width: 320px; }
+            .profile-photo { width: 180px; height: 180px; }
+            .sidebar-areas { margin-top: 26px; }
+            .sidebar-contact { margin-top: 26px; }
+        }
 
         /* Responsividade para Celulares */
         @media (max-width: 900px) {
