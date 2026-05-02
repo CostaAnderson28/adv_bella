@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izabela Ribeiro - Modern Sidebar</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --gold: #f2b457;
+            --sidebar-closed: 80px;
+            --sidebar-open: 350px;
+            --bg-dark: #050505;
+            --sidebar-block-gap: 42px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #fdfdfd;
+            background-position: right center;
+            background-size: 50% 100%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        
+        /* --- SIDEBAR DINÂMICA --- */
+        .sidebar {
+            width: var(--sidebar-open); /* Largura sempre aberta */
+            background-color: var(--bg-dark);
+            color: #fff;
+            padding: 40px 30px 52px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            border-right: 3px solid var(--gold);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            z-index: 100;
+        }
+
+        /* Remover comportamento de hover */
+        .sidebar:hover {
+            width: var(--sidebar-open);
+            padding: 40px 30px 52px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.2);
+        }
+
+        /* Container da marca */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-left: -30px;
+            width: calc(100% + 30px);
+            margin-bottom: var(--sidebar-block-gap);
+        }
+
+        /* Ícone Principal (sempre visível) */
+        .main-icon {
+            width: 340px; height: auto;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+        .sidebar:hover .main-icon {
+            width: 340px;
+        }
+
+        /* Elementos sempre visíveis */
+        .brand-text, .sidebar-contact, .profile-photo-container {
+            opacity: 1; /* Sempre visível */
+            transform: translateX(0);
+            transition: all 0.4s ease-in-out;
+            white-space: nowrap;
+            visibility: visible;
+        }
+
+        /* Manter visível no hover */
+        .sidebar:hover .brand-text, 
+        .sidebar:hover .sidebar-contact,
+        .sidebar:hover .profile-photo-container {
+            opacity: 1;
+            transform: translateX(0);
+            visibility: visible;
+            transition-delay: 0s; 
+        }
+
+        /* Estilos do conteúdo interno da sidebar */
+        .brand-text h1 { font-family: 'DM Serif Display', serif; font-size: 2.2rem; line-height: 1.1; color: #f2b457; margin-bottom: 2px; letter-spacing: 1px; }
+        .brand-text p { text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #888; margin-bottom: 0; }
+        
+        /* Foto na Sidebar */
+        .profile-photo-container { margin-top: 0; margin-bottom: 0; text-align: center; transform: translateX(-10px); }
+        .profile-photo {
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            border: 3px solid var(--gold);
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .sidebar-areas {
+            margin: 0;
+            margin-top: var(--sidebar-block-gap);
+            width: 100%;
+            max-width: 316px;
+            align-self: center;
+        }
+
+        .sidebar-areas h3 {
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-size: 1.36rem;
+            margin-bottom: 17px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .sidebar-areas ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            gap: 12.7px;
+        }
+
+        .sidebar-areas li {
+            display: flex;
+            align-items: center;
+            gap: 10.7px;
+            color: #f3c36a;
+            font-size: 1.03rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .sidebar-areas li i {
+            color: var(--gold);
+            font-size: 1.1rem;
+        }
+
+        .sidebar-cta {
+            width: 100%;
+            max-width: 316px;
+            align-self: center;
+            margin-top: var(--sidebar-block-gap);
+        }
+
+        .sidebar-contact {
+            width: 100%;
+            max-width: 316px;
+            align-self: center;
+            margin-top: var(--sidebar-block-gap);
+        }
+
+        .sidebar-contact div { margin-bottom: 12px; display: flex; align-items: center; gap: 15px; font-size: 0.9rem; }
+        .sidebar-contact i { color: var(--gold); width: 20px; font-size: 1.1rem;}
+
+        .contact-cta-wrap {
+            justify-content: center;
+            transform: none;
+            margin-bottom: 0;
+        }
+
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .content {
+            /* Margem esquerda igual à largura da barra ABERTA */
+            margin-left: auto; 
+            margin-right: auto; 
+            padding: 80px 60px;
+            transition: 0.5s;
+            max-width: 1450px;
+            width: calc(100% - var(--sidebar-open));
+            position: relative;
+            left: calc(var(--sidebar-open) / 2 - 2px); /* Centraliza o conteúdo em relação à barra */
+            min-height: 100vh;
+            background-color: #fdfdfd;
+        }
+
+        .content::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: calc(100vw - var(--sidebar-open));
+            margin-left: calc(-1 * ((100vw - var(--sidebar-open) - 100%) / 2));
+            height: 900px;
+            background:
+                linear-gradient(to bottom, rgba(253, 253, 253, 0.2) 0%, rgba(253, 253, 253, 0.45) 28%, rgba(253, 253, 253, 0.72) 52%, rgba(253, 253, 253, 0.9) 74%, #fdfdfd 100%),
+                url('https://media.discordapp.net/attachments/1228539706900217896/1485813464768319539/image.png?ex=69c33b1f&is=69c1e99f&hm=a37df3a591c5ec5bea2d3a985f0a2b2e7f52c737c8625a0632868302308e43a9&=&format=webp&quality=lossless&width=1028&height=587') center 35%/cover no-repeat;
+            z-index: 0;
+        }
+
+        .content::after {
+            content: none;
+        }
+
+        .content > section {
+            position: relative;
+            z-index: 1;
+        }
+
+        h2 { font-family: 'DM Serif Display', serif; font-size: 3.5rem; margin-bottom: 40px; color: #222; line-height: 1.2; }
+        p.lead { color: #555; line-height: 1.9; margin-bottom: 25px; font-size: 1.25rem; }
+
+        .content > section:first-of-type p.lead {
+            color: #111;
+            font-weight: 400;
+            text-shadow: none;
+        }
+
+        .highlight-split {
+            margin: 50px 0;
+            display: grid;
+            grid-template-columns: minmax(300px, 0.82fr) minmax(480px, 1.18fr);
+            align-items: stretch;
+            gap: 34px;
+        }
+
+        .highlight-split-image {
+            min-height: 620px;
+            background: url('https://media.discordapp.net/attachments/1228539706900217896/1485806160933294131/ca00c7de0f17dbe8041dc46ce8fef5b8.png?ex=69c33451&is=69c1e2d1&hm=c0c8b3acfb3a2b76eab598755024534d126258920850d984f40a6d976c91def0&=&format=webp&quality=lossless&width=1028&height=686') center/cover no-repeat;
+            border-radius: 12px;
+        }
+
+        .highlight-split-content {
+            padding: 46px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .highlight-split-content h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: #1f1f1f;
+            margin-bottom: 16px;
+            line-height: 1.25;
+        }
+
+        .highlight-split-content p {
+            color: #555;
+            font-size: 1.08rem;
+            line-height: 1.8;
+            margin-bottom: 14px;
+            text-align: justify;
+        }
+
+        .highlight-split-content .btn-whatsapp {
+            margin-top: 12px;
+            align-self: flex-start;
+            padding: 14px 30px;
+            font-size: 1rem;
+        }
+
+        .service-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; margin-top: 70px; }
+        .service-item {
+            padding: 60px;
+            min-height: 330px;
+            background: linear-gradient(180deg, #ffffff 0%, #fcfcfc 100%);
+            border: 1px solid rgba(225, 200, 160, 0.5);
+            border-top: 3px solid rgba(242, 180, 87, 0.65);
+            border-radius: 12px;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+            transition: 0.3s;
+        }
+        .service-item:hover { border-color: var(--gold); box-shadow: 0 12px 32px rgba(235, 177, 88, 0.2); transform: translateY(-5px); }
+        .service-item h3 { margin-bottom: 18px; color: #000; font-size: 1.75rem; font-family: 'DM Serif Display', serif; }
+        .service-item i { color: var(--gold); font-size: 2.5rem; margin-bottom: 25px; display: block; }
+        .service-item p { color: #666; line-height: 1.8; font-size: 1.1rem; }
+
+        .feature-panel {
+            margin-top: 90px;
+            width: calc(100vw - var(--sidebar-open));
+            max-width: none;
+            margin-left: calc(-1 * ((100vw - var(--sidebar-open) - 100%) / 2));
+            min-height: 540px;
+            border-radius: 0;
+            overflow: hidden;
+            position: relative;
+            background:
+                linear-gradient(105deg, rgba(5, 5, 5, 0.88) 0%, rgba(5, 5, 5, 0.72) 45%, rgba(10, 16, 33, 0.82) 100%),
+                url('https://www.sindmetal-am.org.br/wp-content/uploads/2016/08/asse1.jpg') center/cover no-repeat;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+        }
+
+        .feature-panel-content {
+            max-width: 980px;
+            padding: 42px 64px 70px;
+            color: #fff;
+            margin-left: auto;
+        }
+
+        .feature-oab {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 1.45rem;
+            letter-spacing: 0.02em;
+            margin-bottom: 16px;
+        }
+
+        .feature-oab::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            min-width: 120px;
+            background: rgba(242, 180, 87, 0.75);
+            transform: translateY(1px);
+        }
+
+        .feature-panel h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .feature-panel p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.92);
+            margin-bottom: 20px;
+        }
+
+        .feature-panel-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(242, 180, 87, 0.8);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(242, 180, 87, 0.14);
+            transform: translateY(-2px);
+        }
+
+        .cta-box {
+            margin-top: 96px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, #ffffff 100%);
+            padding: 62px 54px;
+            border-radius: 16px;
+            box-shadow: 0 16px 36px rgba(0,0,0,0.08);
+            border-top: 2px solid rgba(242, 180, 87, 0.5);
+            border-bottom: 5px solid var(--gold);
+        }
+
+        .cta-box h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.45rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            color: #191919;
+        }
+
+        .cta-box p {
+            max-width: 980px;
+            margin: 0 auto 12px;
+            color: #353535;
+            font-size: 1.18rem;
+            line-height: 1.65;
+        }
+
+        .cta-box .btn-whatsapp {
+            margin-top: 24px;
+            padding: 18px 44px;
+            font-size: 1.18rem;
+            box-shadow: 0 14px 30px rgba(37, 211, 102, 0.32);
+        }
+        .btn-whatsapp {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: #25D366; color: #fff; padding: 18px 40px; 
+            border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 30px;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4); transition: 0.3s; font-size: 1.1rem;
+        }
+        .btn-whatsapp:hover { transform: scale(1.05); background: #20bd5a; }
+
+        /* Responsividade para Celulares */
+        @media (max-width: 900px) {
+            .sidebar {
+                width: 100%; position: relative; height: auto; padding: 40px 20px 50px;
+                align-items: center; text-align: center;
+                /* Desativa o efeito de hover no mobile */
+                overflow: visible;
+                --sidebar-block-gap: 34px;
+            }
+            .sidebar:hover { width: 100%; padding: 40px 20px 50px; box-shadow: none; }
+            .brand-header { justify-content: flex-start; margin-left: -20px; width: calc(100% + 20px); }
+            .main-icon { align-self: flex-start; margin-bottom: 20px; width: 305px; }
+            /* Força os elementos a aparecerem sempre no mobile */
+            .brand-text, .sidebar-contact, .profile-photo-container {
+                opacity: 1; transform: none; visibility: visible; transition-delay: 0s;
+            }
+            .sidebar-areas {
+                max-width: 351px;
+                margin: var(--sidebar-block-gap) 0 0;
+                text-align: left;
+            }
+            .sidebar-cta { max-width: 351px; margin: var(--sidebar-block-gap) 0 0; }
+            .sidebar-contact { max-width: 351px; margin-top: var(--sidebar-block-gap); }
+            .contact-cta-wrap { transform: none; margin-bottom: 0; }
+            .content { margin-left: 0; padding: 40px 5%; }
+            .content::before {
+                width: 100vw;
+                margin-left: calc(50% - 50vw);
+                height: 620px;
+                background:
+                    linear-gradient(to bottom, rgba(253, 253, 253, 0.22) 0%, rgba(253, 253, 253, 0.5) 40%, rgba(253, 253, 253, 0.84) 70%, #fdfdfd 100%),
+                        url('https://media.discordapp.net/attachments/1228539706900217896/1485813464768319539/image.png?ex=69c33b1f&is=69c1e99f&hm=a37df3a591c5ec5bea2d3a985f0a2b2e7f52c737c8625a0632868302308e43a9&=&format=webp&quality=lossless&width=1028&height=587') center top/cover no-repeat;
+            }
+            h2 { font-size: 2.2rem; }
+            .highlight-split {
+                grid-template-columns: 1fr;
+                margin: 36px 0 48px;
+                gap: 20px;
+            }
+            .highlight-split-image {
+                min-height: 320px;
+                background-position: center 42%;
+            }
+            .highlight-split-content {
+                padding: 30px 24px 34px;
+            }
+            .highlight-split-content h3 {
+                font-size: 1.7rem;
+            }
+            .highlight-split-content .btn-whatsapp {
+                align-self: stretch;
+                justify-content: center;
+            }
+            .service-list { grid-template-columns: 1fr; gap: 24px; }
+            .service-item { padding: 36px; min-height: auto; }
+            .feature-panel { margin-top: 60px; width: 100vw; margin-left: calc(50% - 50vw); min-height: auto; background-position: center; }
+            .feature-panel-content { margin-left: 0; max-width: 100%; padding: 30px 28px 44px; }
+            .feature-oab { font-size: 1.1rem; }
+            .feature-panel h3 { font-size: 2.2rem; }
+            .feature-panel p { font-size: 1.03rem; line-height: 1.75; }
+            .feature-panel-actions { flex-direction: column; align-items: stretch; }
+            .feature-panel-actions a { justify-content: center; text-align: center; }
+            .cta-box { padding: 42px 22px; margin-top: 72px; border-radius: 14px; }
+            .cta-box h3 { font-size: 2rem; }
+            .cta-box p { font-size: 1.04rem; line-height: 1.7; }
+            .cta-box .btn-whatsapp { width: 100%; justify-content: center; font-size: 1.08rem; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="brand-header">
+            <img src="logo-isabela.png" alt="Logo" class="main-icon">
+        </div>
+
+        <div class="profile-photo-container">
+            <img src="Perfil.jpg" alt="Dra Izabela Ribeiro" class="profile-photo">
+        </div>
+
+        <div class="sidebar-areas">
+            <h3>Áreas de Atuação</h3>
+            <ul>
+                <li><i class="fa-solid fa-circle-check"></i><span>Direito Civil</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>Direito Trabalhista</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>Direito das Famílias</span></li>
+                <li><i class="fa-solid fa-circle-check"></i><span>Direito do Consumidor</span></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-cta">
+            <div class="contact-cta-wrap" style="display: flex;">
+                <a href="https://wa.me/5521972793416" style="background: var(--gold); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.2s;">
+                    <i class="fab fa-whatsapp" style="color: #fff;"></i>
+                    <span>Entre em contato</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar-contact">
+            <div><i class="fas fa-map-marker-alt"></i> <span style="font-size: 0.85rem;">Estr. do Pacheco, 201, São Gonçalo, RJ</span></div>
+            <div><i class="fab fa-whatsapp"></i> (21) 97279-3416</div>
+            <div><i class="fas fa-envelope"></i> <span style="font-size: 0.8rem;">izabelasribeiro.adv@gmail.com</span></div>
+            <div style="margin-bottom: 0;"><i class="fab fa-instagram"></i> <a href="https://www.instagram.com/izabelaribeiro_adv/" target="_blank" rel="noopener noreferrer" style="color: #fff; text-decoration: none;">@izabelaribeiro_adv</a></div>
+        </div>
+    </aside>
+
+    <main class="content">
+        <section>
+            <h2>Atuação jurídica personalizada para cada fase da sua vida.</h2>
+            <p class="lead" style="text-align: justify;">Nosso escritório oferece assessoria jurídica especializada nas áreas de Direito Civil, Família, Consumidor e Trabalhista, atuando de forma estratégica tanto na prevenção quanto na resolução de conflitos. Prestamos suporte completo em divórcios, guarda e pensão alimentícia, indenizações, cobranças indevidas, revisão contratual, verbas trabalhistas, reconhecimento de vínculo empregatício e demais demandas relacionadas às nossas áreas de atuação.</p>
+            <p class="lead" style="text-align: justify;">Atendimento personalizado, com análise detalhada de cada caso e definição da melhor estratégia jurídica, seja na esfera judicial ou extrajudicial. Atendimento presencial e online, com praticidade e segurança, de onde você estiver.</p>
+            
+                <div class="highlight-split">
+                    <div class="highlight-split-image" role="img" aria-label="Balança da Justiça e martelo sobre mesa"></div>
+                    <div class="highlight-split-content">
+                        <h3>Por que procurar um advogado?</h3>
+                        <p>Adiar uma orientação jurídica pode transformar um problema simples em uma situação mais complexa e onerosa. Muitas decisões tomadas sem análise técnica acabam gerando prejuízos que poderiam ser evitados com o acompanhamento adequado. O advogado é o profissional capacitado para esclarecer direitos, deveres e apresentar as melhores alternativas para cada caso.</p>
+                        <p>Mais do que resolver conflitos já existentes, a assessoria jurídica permite agir com estratégia, prevenir riscos e tomar decisões com segurança. Buscar orientação no momento certo é a forma mais eficaz de proteger seus interesses e evitar consequências futuras</p>
+                    </div>
+                </div>
+        </section>
+
+        <section>
+            <h2 style="font-size: 2.5rem; text-align: center;">Áreas de Atuação</h2>
+
+            <p class="lead" style="margin: 20px auto 40px; text-align: justify;">Atuação jurídica estratégica, pautada na análise aprofundada de cada caso e na construção de soluções personalizadas. O trabalho é desenvolvido com rigor técnico, visão preventiva e foco na resolução eficiente de conflitos, sempre buscando a melhor alternativa jurídica para cada situação.</p>
+
+            <div class="service-list">
+                <div class="service-item">
+                    <i class="fa-solid fa-house-user"></i>
+                    <h3>Direito de Família</h3>
+                    <p style="text-align: justify;">Questões familiares exigem equilíbrio entre firmeza jurídica e sensibilidade. Atuação em divórcio, guarda, pensão alimentícia, regulamentação de convivência e partilha de bens, com condução estratégica e responsável.
+Cada demanda é tratada com discrição, buscando soluções que garantam estabilidade jurídica e respeitem as particularidades de cada núcleo familiar.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <h3>Direito do Consumidor</h3>
+                    <p style="text-align: justify;">Laboração incisiva contra práticas abusivas, cobranças indevidas, negativação irregular e falhas na prestação de serviços ou fornecimento de produtos.
+O trabalho é direcionado à efetiva reparação de danos e à restauração do equilíbrio nas relações de consumo, assegurando o cumprimento das garantias previstas em lei.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-child"></i>
+                    <h3>Direito Civil</h3>
+                    <p style="text-align: justify;">Atuação voltada à proteção patrimonial e à solução de conflitos decorrentes de relações privadas. Elaboração, revisão e interpretação de contratos, responsabilização por danos morais e materiais, cobranças e disputas obrigacionais são conduzidas com análise técnica minuciosa e foco em segurança jurídica.
+Mais do que reagir ao conflito, o objetivo é estruturar soluções que reduzam riscos e preservem direitos.
+Direito de Família</p>
+                </div>
+                <div class="service-item">
+                    <i class="fa-solid fa-briefcase"></i>
+                    <h3>Direito Trabalhista</h3>
+                    <p style="text-align: justify;">Defesa de direitos decorrentes da relação de emprego, incluindo reconhecimento de vínculo, verbas rescisórias, horas extras, adicionais e indenizações.
+A análise criteriosa da realidade contratual permite identificar irregularidades e estruturar medidas jurídicas eficazes para a proteção do trabalhador.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="feature-panel">
+            <div class="feature-panel-content">
+                <h3>Izabela da Silva Ribeiro</h3>
+                <div class="feature-oab">OAB/RJ – 264.078 </div>
+                <p style="font-size: 1.35rem; line-height: 1.6; margin-bottom: 22px; color: #fff;">Seu caso tratado com técnica, clareza e foco em resultado.</p>
+                <p style="text-align: justify;">Advogada com sólida formação acadêmica e atuação nas áreas de Direito Civil, Direito de Família, Direito do Consumidor e Direito do Trabalho. Pós-graduada em Políticas Públicas, possui uma visão ampliada do Direito, compreendendo não apenas a aplicação das normas, mas também os impactos sociais e institucionais das decisões jurídicas.</p>
+                <p style="text-align: justify;">Seu trabalho é desenvolvido com rigor técnico, análise estratégica individualizada e compromisso com soluções seguras e eficazes. Acredita que a advocacia exige clareza na orientação, transparência na condução dos processos e acompanhamento próximo do cliente em todas as etapas.</p>
+                <p style="text-align: justify;">Atua tanto na esfera judicial quanto extrajudicial, oferecendo suporte completo na resolução de conflitos e na prevenção de riscos jurídicos, sempre com planejamento adequado e fundamentação consistente.</p>
+                <p style="text-align: justify;">Realiza atendimento em todo o Brasil, de forma online, com praticidade e segurança, além de atendimento presencial mediante agendamento. Seu compromisso é oferecer orientação objetiva, estratégias bem definidas e um serviço jurídico de qualidade, pautado na ética, responsabilidade e construção de relações de confiança.</p>
+
+            </div>
+        </section>
+
+        <section class="cta-box">
+            <h3>Agende sua consulta</h3>
+            
+            <p style="text-align: justify;">Cada situação jurídica exige análise cuidadosa e orientação adequada. Ao agendar sua consulta, você receberá uma avaliação técnica do seu caso, com esclarecimento de direitos, identificação de riscos e definição das possíveis estratégias jurídicas.</p>
+            <p style="text-align: justify;">O atendimento é realizado com confidencialidade, transparência e foco na melhor solução para a sua demanda.</p>
+            <p style="text-align: justify;">Entre em contato e dê o primeiro passo para resolver sua questão com segurança e orientação profissional.</p>
+            <a href="https://wa.me/5521972793416" class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Falar com a Dra. Izabela</a>
+        </section>
+    </main>
+</body>
+</html>
