@@ -408,8 +408,8 @@
                 --sidebar-block-gap: 34px;
             }
             .sidebar:hover { width: 100%; padding: 40px 20px 50px; box-shadow: none; }
-            .brand-header { justify-content: flex-start; margin-left: -20px; width: calc(100% + 20px); }
-            .main-icon { align-self: flex-start; margin-bottom: 20px; width: 305px; }
+            .brand-header { justify-content: flex-start; margin-left: -20px; width: calc(100% + 40px); }
+            .main-icon { display: block; align-self: flex-start; margin-bottom: 20px; width: 100%; max-width: none; }
             /* Força os elementos a aparecerem sempre no mobile */
             .brand-text, .sidebar-contact, .profile-photo-container {
                 opacity: 1; transform: none; visibility: visible; transition-delay: 0s;
@@ -422,14 +422,14 @@
             .sidebar-cta { max-width: 351px; margin: var(--sidebar-block-gap) 0 0; }
             .sidebar-contact { max-width: 351px; margin-top: var(--sidebar-block-gap); }
             .contact-cta-wrap { transform: none; margin-bottom: 0; }
-            .content { margin-left: 0; padding: 40px 5%; }
+            .content { margin-left: 0; padding: 40px 5%; left: 0; width: 100%; max-width: none; }
             .content::before {
                 width: 100vw;
                 margin-left: calc(50% - 50vw);
                 height: 620px;
                 background:
-                    linear-gradient(to bottom, rgba(253, 253, 253, 0.22) 0%, rgba(253, 253, 253, 0.5) 40%, rgba(253, 253, 253, 0.84) 70%, #fdfdfd 100%),
-                        url('bg.png') center top/cover no-repeat;
+                    linear-gradient(to bottom, rgba(253, 253, 253, 0.08) 0%, rgba(253, 253, 253, 0.28) 40%, rgba(253, 253, 253, 0.62) 70%, #fdfdfd 100%),
+                        url('bg.png') right center/120% auto no-repeat;
             }
             h2 { font-size: 2.2rem; }
             .highlight-split {
@@ -464,6 +464,25 @@
             .cta-box h3 { font-size: 2rem; }
             .cta-box p { font-size: 1.04rem; line-height: 1.7; }
             .cta-box .btn-whatsapp { width: 100%; justify-content: center; font-size: 1.08rem; }
+        }
+
+        @media (max-width: 520px) {
+            .sidebar { padding: 32px 16px 40px; }
+            .brand-header { margin-left: -16px; width: calc(100% + 32px); }
+            .main-icon { width: 100%; max-width: none; }
+            .profile-photo { width: 180px; height: 180px; }
+            .sidebar-areas h3 { font-size: 1.2rem; }
+            .sidebar-areas li { font-size: 0.95rem; }
+            .content { padding: 32px 6%; }
+            .content::before { height: 520px; }
+            h2 { font-size: 1.9rem; }
+            p.lead { font-size: 1.05rem; }
+            .highlight-split-image { min-height: 240px; }
+            .highlight-split-content { padding: 24px 20px 28px; }
+            .service-item { padding: 30px; }
+            .service-item h3 { font-size: 1.5rem; }
+            .feature-panel h3 { font-size: 1.9rem; }
+            .cta-box h3 { font-size: 1.8rem; }
         }
     </style>
 </head>
